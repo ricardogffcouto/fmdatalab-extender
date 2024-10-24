@@ -1,16 +1,72 @@
 import { findPlayerTable } from './tableFunctions.js';
-import { main } from './main.js';
+import { main, handleTableUpdate } from './main.js';
 
 export function setupDOMObserver() {
-  const observer = new MutationObserver((mutations, obs) => {
-    const playerTable = findPlayerTable();
-    if (playerTable) {
-      console.log("Player table found after DOM change");
-      obs.disconnect(); // Stop observing
-      main(); // Run our main logic
-    }
-  });
+  let observer = null;
 
-  // Start observing the document with the configured parameters
-  observer.observe(document, { childList: true, subtree: true });
+  function observeTableChanges(playerTable) {
+    const tableBody = playerTable.querySelector('tbody');
+    
+    if (tableBody) {
+      if (observer) observer.disconnect();
+
+      observer = new MutationObserver((mutations, obs) => {
+        if (mutations.some(mutation => !mutation.target.classList.contains('Physical + Mental'))) {
+          console.log("Detected changes in the table content");
+          handleTableUpdate(playerTable);  // Call the update logic
+        }
+      });
+
+      observer.observe(tableBody, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+  }
+
+  function attachEventListenersToTable(playerTable) {
+    const headers = playerTable.querySelectorAll('thead th');
+    headers.forEach(header => {
+      header.addEventListener('click', () => {
+        console.log("Sorting triggered");
+        handleTableUpdate(playerTable);  // Trigger table update after sorting
+      });
+    });
+
+    const filters = playerTable.querySelectorAll('input, select');
+    filters.forEach(filter => {
+      filter.addEventListener('change', () => {
+        console.log("Filtering triggered");
+        handleTableUpdate(playerTable);  // Trigger table update after filtering
+      });
+    });
+  }
+
+  function initTableObserver() {
+    const playerTableContainer = document.getElementById('player-table');
+    
+    // Check if the container exists before observing
+    if (playerTableContainer) {
+      const playerTable = findPlayerTable();
+      if (playerTable) {
+        if (!playerTable.dataset.enhancerInitialized) {
+          console.log("Player table found after DOM change");
+          main();  // Run the main logic and initialize the table
+          playerTable.dataset.enhancerInitialized = true;  // Mark as initialized
+          observeTableChanges(playerTable);  // Start observing table updates
+          attachEventListenersToTable(playerTable);  // Attach event listeners for sorting/filtering
+        } else {
+          handleTableUpdate(playerTable);  // Handle the table updates
+        }
+      }
+    } else {
+      // Retry observing if the container does not exist yet
+      console.log("Player table container not found. Retrying...");
+      setTimeout(initTableObserver, 1000);  // Retry after 1s
+    }
+  }
+
+  initTableObserver();  // Start the observation process
 }

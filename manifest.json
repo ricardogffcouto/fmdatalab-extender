@@ -7,7 +7,7 @@
     "content_scripts": [
         {
         "matches": ["https://www.fmdatalab.com/*"],
-        "js": ["contentScript.bundle.js"]
+        "js": ["dist/contentScript.bundle.js"]
         }
     ]
     }
