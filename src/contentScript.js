@@ -1,7 +1,7 @@
 import { setupDOMObserver } from './modules/domObserver.js';
 import { main } from './modules/main.js';
 
-console.log("FMDataLab Enhancer loaded - v1.1 - 7");
+console.log("FMDataLab Enhancer loaded - v1.1 - 12");
 
 // Run the main function when the content script is injected
 console.log("Content script loaded");

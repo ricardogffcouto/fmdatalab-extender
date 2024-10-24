@@ -59,7 +59,10 @@ export function addCellValue(row, columnIndices, calculationFunction, targetColu
     }
   }
 
-export function addNewColumn(playerTable, columnName, sourceColumns, calculationFunction) {
+export function addNewColumn(playerTable, column) {
+    console.log("Column to add:", column);
+    const { name, sourceColumns, calculationFunction } = column;
+    const columnName = name;
   // Find the second tr in thead
   const headerRows = playerTable.querySelectorAll("thead tr");
   if (headerRows.length < 2) {

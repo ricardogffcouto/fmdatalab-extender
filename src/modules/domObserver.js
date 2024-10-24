@@ -13,7 +13,15 @@ export function setupDOMObserver() {
       observer = new MutationObserver((mutations, obs) => {
         if (mutations.some(mutation => !mutation.target.classList.contains('Physical + Mental'))) {
           console.log("Detected changes in the table content");
-          handleTableUpdate(playerTable);  // Call the update logic
+          obs.disconnect();  // Temporarily disconnect the observer
+          handleTableUpdate(playerTable).then(() => {
+            obs.observe(tableBody, {
+              childList: true,
+              subtree: true,
+              attributes: true,
+              attributeFilter: ['class']
+            });
+          });
         }
       });
 

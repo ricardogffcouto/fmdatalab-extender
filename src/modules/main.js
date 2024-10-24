@@ -1,21 +1,24 @@
-import { addNewColumn, findPlayerTable, updateCustomColumn } from './tableFunctions.js';
+import { physicalMental } from '../columns/physicalMental.js';
+import { addNewColumn, findPlayerTable } from './tableFunctions.js';
 
 let isUpdating = false;
 
-export function handleTableUpdate(playerTable) {
+export async function handleTableUpdate(playerTable) {
     if (isUpdating) return;
     isUpdating = true;
-    console.log("Table updated, rebuilding custom column");
-    setTimeout(() => {
-        const calculateAverage = (values) => values.reduce((a, b) => a + b, 0) / values.length;
-        addNewColumn(
-            playerTable,
-            "Physical + Mental",
-            ["col-Physical", "col-Mental"],
-            calculateAverage
-        );
-        isUpdating = false;
-    }, 100);
+    console.log("Table updated, rebuilding custom columns");
+
+    const context = require.context('../columns', false, /\.js$/);
+    context.keys().forEach(async (key) => {
+        const module = context(key);
+        console.log(`Loaded module: ${key}`, module);
+        if (module.physicalMental && module.physicalMental.active) {
+            console.log(`Adding column: ${module.physicalMental.name}`);
+            addNewColumn(playerTable, module.physicalMental);
+        }
+    });
+
+    isUpdating = false;
 }
 
 export function main() {
