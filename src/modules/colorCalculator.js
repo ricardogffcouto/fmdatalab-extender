@@ -23,6 +23,5 @@ export function calculateColor(value) {
   const hexB = b.toString(16).padStart(2, '0');
 
   const color = `#${hexR}${hexG}${hexB}`;
-  console.log("Color:", color);
   return color;
 }

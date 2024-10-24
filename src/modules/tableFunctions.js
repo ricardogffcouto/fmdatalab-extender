@@ -27,7 +27,7 @@ function createNewCell(value) {
   return newCell;
 }
 
-function addNewColumn(playerTable, columnName, sourceColumns, calculationFunction) {
+export function addNewColumn(playerTable, columnName, sourceColumns, calculationFunction) {
     // Find the second tr in thead
     const headerRows = playerTable.querySelectorAll("thead tr");
     if (headerRows.length < 2) {
@@ -116,6 +116,7 @@ function addNewColumn(playerTable, columnName, sourceColumns, calculationFunctio
           // Create a new cell and insert the calculated value
           const newCell = createNewCell(newValue);
           row.appendChild(newCell);
+          console.log("New column added successfully");
         } else {
           console.warn("No valid values found for this row");
         }
@@ -124,7 +125,7 @@ function addNewColumn(playerTable, columnName, sourceColumns, calculationFunctio
       }
     });
   }
-  
+
 export function findPlayerTable() {
   const selectors = ['table', '.table', '#playerTable', '[data-testid="player-table"]'];
   for (let selector of selectors) {

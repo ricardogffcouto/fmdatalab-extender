@@ -12,7 +12,6 @@ export function main() {
       ["col-Physical", "col-Mental"], 
       calculateAverage
     );
-    console.log("New column added successfully");
   } else {
     console.log("Player table not found yet");
   }
